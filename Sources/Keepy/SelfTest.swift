@@ -45,6 +45,14 @@ enum SelfTest {
         expect(PasteboardReader.read(pb) == nil, "빈칸뿐인 텍스트는 기록 안 함")
 
         pb.clearContents()
+        pb.setString("안녕 Keepy\n", forType: .string)
+        expect(PasteboardReader.read(pb)?.hash == text?.hash, "앞뒤 빈칸만 다르면 같은 항목")
+
+        pb.clearContents()
+        pb.setString(String(repeating: "a", count: PasteboardReader.maxTextBytes + 1), forType: .string)
+        expect(PasteboardReader.read(pb) == nil, "너무 긴 글은 기록 안 함")
+
+        pb.clearContents()
         pb.declareTypes([.string, NSPasteboard.PasteboardType("org.nspasteboard.ConcealedType")], owner: nil)
         pb.setString("secret", forType: .string)
         expect(PasteboardReader.read(pb) == nil, "비밀번호 관리자 숨김 표시는 기록 안 함")
@@ -70,13 +78,16 @@ enum SelfTest {
         let store = HistoryStore(directory: dir, limit: { limit })
 
         func content(_ s: String) -> CapturedContent {
-            CapturedContent(kind: .text, text: s, hash: "text:" + s)
+            CapturedContent(kind: .text, text: s, hash: PasteboardReader.textHash(s))
         }
         for s in ["a", "b", "c"] { store.add(content(s), sourceBundleID: nil, sourceAppName: nil) }
         expect(store.items.map(\.text) == ["c", "b", "a"], "최근 것이 위로")
 
         store.add(content("a"), sourceBundleID: nil, sourceAppName: nil)
         expect(store.items.map(\.text) == ["a", "c", "b"], "같은 내용은 하나만, 맨 위로")
+        store.add(content("a\n"), sourceBundleID: nil, sourceAppName: nil)
+        expect(store.items.map(\.text) == ["a\n", "c", "b"], "빈칸만 다르면 하나로, 새로 복사한 글로")
+        store.add(content("a"), sourceBundleID: nil, sourceAppName: nil)
 
         store.togglePin(store.items[2].id) // b 고정
         store.add(content("d"), sourceBundleID: nil, sourceAppName: nil)

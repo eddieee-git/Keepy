@@ -63,6 +63,8 @@ final class PanelController: NSObject, NSWindowDelegate {
     }
 
     var isVisible: Bool { panel.isVisible }
+    /// 마지막으로 띄운 자리의 가운데. 복사 알림을 같은 자리에 띄운다.
+    var lastCenter: NSPoint { NSPoint(x: panel.frame.midX, y: panel.frame.midY) }
 
     func toggle() {
         isVisible ? hide() : show()

@@ -98,17 +98,24 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     /// 항목을 클립보드에 올리고, 설정에 따라 앞에 있던 앱에 ⌘V를 보낸다.
     func paste(_ item: ClipItem, plainText: Bool) {
         let copyOnly = panel.isVisible && panel.viewModel.copyOnly
+        let fromPanel = panel.isVisible
         panel.hide()
         Paster.write(item, store: store, plainText: plainText)
         monitor.syncChangeCount()
         store.markUsed(item.id)
 
+        // 붙여 넣지 않고 복사만 할 때는 잘 됐는지 알 수 있게 잠깐 알린다.
+        let center = fromPanel ? panel.lastCenter : NSEvent.mouseLocation
         if copyOnly {
             // Keepy를 숨겨서 앞에 쓰던 앱으로 돌아가게 한다. 거기서 ⌘V로 붙여 넣으면 된다.
             NSApp.hide(nil)
+            CopiedToast.show(at: center)
             return
         }
-        guard settings.pasteAutomatically else { return }
+        guard settings.pasteAutomatically else {
+            CopiedToast.show(at: center)
+            return
+        }
         if Paster.isTrusted {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.08) { Paster.sendPasteKeystroke() }
         } else {

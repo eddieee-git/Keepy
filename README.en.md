@@ -92,6 +92,12 @@ Password managers mark what they copy as concealed (`org.nspasteboard.ConcealedT
 **Picking an item only copies it instead of pasting.**
 That happens when Accessibility permission is off. Turn on Keepy in System Settings → Privacy & Security → Accessibility. If it stops working after an update, turn it off and on again.
 
+**I can't see the Keepy icon in the menu bar.**
+macOS 26 lets you choose which apps may show icons in the menu bar. Turn on Keepy in System Settings → **Menu Bar** → **Allow in the Menu Bar**. It may turn off again after an update. On Macs with a notch, icons can also hide behind the notch when there are many. **⌃⌥V** and recording keep working in the meantime.
+
+**Very long text isn't recorded.**
+Text over 1 MB (a whole log file, for example) isn't recorded, because a large history makes saving and searching slow.
+
 ## Uninstall
 
 1. Keepy icon in the menu bar → **Quit Keepy**

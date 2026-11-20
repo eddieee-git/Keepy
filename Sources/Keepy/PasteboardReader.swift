@@ -25,6 +25,8 @@ enum PasteboardReader {
     ]
 
     static let maxImageBytes = 30 * 1024 * 1024
+    /// 이보다 긴 글(로그 파일 통째 등)은 기록하지 않는다. 기록 파일이 커지면 저장과 검색이 매번 느려진다.
+    static let maxTextBytes = 1024 * 1024
 
     static func read(_ pb: NSPasteboard) -> CapturedContent? {
         let types = Set((pb.types ?? []).map(\.rawValue))
@@ -43,8 +45,10 @@ enum PasteboardReader {
         // 2) 텍스트 (서식 있는 경우 RTF도 함께 보관)
         if let string = pb.string(forType: .string),
            !string.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            guard string.utf8.count <= maxTextBytes else { return nil }
+            // 앞뒤 빈칸·줄바꿈만 다른 글은 같은 항목으로 본다.
             return CapturedContent(kind: .text, text: string, rtfData: pb.data(forType: .rtf),
-                                   hash: digest("text:" + string))
+                                   hash: textHash(string))
         }
 
         // 3) 이미지
@@ -65,6 +69,10 @@ enum PasteboardReader {
         guard let tiff = pb.data(forType: .tiff),
               let rep = NSBitmapImageRep(data: tiff) else { return nil }
         return rep.representation(using: .png, properties: [:])
+    }
+
+    static func textHash(_ string: String) -> String {
+        digest("text:" + string.trimmingCharacters(in: .whitespacesAndNewlines))
     }
 
     private static func digest(_ string: String) -> String {

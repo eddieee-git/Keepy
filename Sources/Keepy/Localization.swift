@@ -47,6 +47,8 @@ enum Localization {
         ("오려두기", "Cut"),
         ("복사", "Copy"),
         ("서식 없이 복사", "Copy as Plain Text"),
+        ("복사했어요", "Copied"),
+        ("• 메뉴바에 아이콘이 안 보이면 시스템 설정 → 메뉴 막대에서 Keepy를 켜 주세요.", "• If the menu bar icon is missing, turn on Keepy in System Settings → Menu Bar."),
         ("붙이기", "Paste"),
         ("전체 선택", "Select All"),
         ("윈도우", "Window"),

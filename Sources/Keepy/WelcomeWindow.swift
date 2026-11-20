@@ -92,6 +92,8 @@ private struct WelcomeView: View {
                     Text(L("• 단축키로 기록을 열고, 입력해서 찾고, ↩로 붙여 넣어요."))
                     Text(L("• ⌘1~9로 바로 고르고, ⌘P로 자주 쓰는 항목을 맨 위에 고정해요."))
                     Text(L("• 비밀번호 관리자에서 복사한 내용은 기록하지 않아요."))
+                    Text(L("• 메뉴바에 아이콘이 안 보이면 시스템 설정 → 메뉴 막대에서 Keepy를 켜 주세요."))
+                        .fixedSize(horizontal: false, vertical: true)
                 }
                 .font(.callout)
                 .padding(4)

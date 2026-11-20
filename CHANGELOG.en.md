@@ -2,6 +2,13 @@
 
 Details for each version are in [docs/releases](docs/releases) and on [GitHub Releases](https://github.com/eddieee-git/mac-app-keepy/releases). 한국어: [CHANGELOG.md](CHANGELOG.md)
 
+## Unreleased
+
+- Shows "Copied" briefly when an item is copied instead of pasted.
+- Text that differs only in leading or trailing spaces and line breaks is merged into one item.
+- Text over 1 MB isn't recorded.
+- Getting Started and the README say where to look when the menu bar icon is missing.
+
 ## 0.1.1 (2026-11-20)
 
 - Opening Keepy directly (Applications, Spotlight, or opening it again while it runs) shows the history window. Picking an item there copies it and returns you to the app you were using.

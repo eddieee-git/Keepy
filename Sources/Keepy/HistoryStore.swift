@@ -43,6 +43,12 @@ final class HistoryStore: ObservableObject {
             // 같은 내용을 다시 복사하면 맨 위로 올린다.
             var existing = items.remove(at: index)
             existing.lastUsedAt = now
+            if existing.kind == .text, existing.text != content.text {
+                // 빈칸만 다른 글이면 방금 복사한 쪽으로 바꿔 둔다.
+                existing.text = content.text
+                if let old = existing.rtfFile { try? FileManager.default.removeItem(at: blobURL(old)) }
+                existing.rtfFile = content.rtfData.flatMap { writeBlob($0, name: "\(existing.id.uuidString).rtf") }
+            }
             items.insert(existing, at: 0)
             scheduleSave()
             return
