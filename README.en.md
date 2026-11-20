@@ -45,6 +45,8 @@ Requires an Apple silicon Mac with macOS 14 or later.
 3. Type to search, choose with **↑↓** and press **Return** to paste it there. You can also pick directly with **⌘1–9**.
 4. Pin items you use often with **⌘P**. The menu bar menu also lists the 10 most recent items to paste.
 
+Opening Keepy directly from Applications or Spotlight also shows the history window. Picking an item there just copies it and returns you to the app you were using, so paste it with ⌘V wherever you like.
+
 Other tools (such as Shortcuts) can open the history window with `open keepy://show`.
 
 ## Shortcuts
