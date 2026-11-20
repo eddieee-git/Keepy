@@ -76,8 +76,8 @@ struct HistoryView: View {
                                 onPick(item, NSEvent.modifierFlags.contains(.option))
                             }
                             .contextMenu {
-                                Button(L("붙여 넣기")) { onPick(item, false) }
-                                Button(L("서식 없이 붙여 넣기")) { onPick(item, true) }
+                                Button(vm.copyOnly ? L("복사") : L("붙여 넣기")) { onPick(item, false) }
+                                Button(vm.copyOnly ? L("서식 없이 복사") : L("서식 없이 붙여 넣기")) { onPick(item, true) }
                                 Divider()
                                 Button(item.pinned ? L("고정 풀기") : L("고정")) { vm.store.togglePin(item.id) }
                                 Button(L("삭제"), role: .destructive) { vm.delete(item) }
@@ -98,7 +98,7 @@ struct HistoryView: View {
             if let notice = vm.notice {
                 Text(notice).foregroundStyle(.secondary)
             } else {
-                hint("↩", L("붙여 넣기"))
+                hint("↩", vm.copyOnly ? L("복사") : L("붙여 넣기"))
                 hint("⌥↩", L("서식 없이"))
                 hint("⌘P", L("고정"))
                 hint("⌘⌫", L("삭제"))

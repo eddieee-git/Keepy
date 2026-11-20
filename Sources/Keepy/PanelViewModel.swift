@@ -11,6 +11,8 @@ final class PanelViewModel: ObservableObject {
     @Published private(set) var focusRequest = 0
     /// 아래 줄에 잠깐 보여 줄 알림 (예: 삭제했어요 · ⌘Z 되돌리기)
     @Published private(set) var notice: String?
+    /// 앱 아이콘으로 열었을 때: 고르면 클립보드에 올리기만 한다(붙여 넣을 앞 앱이 없음).
+    @Published var copyOnly = false
 
     let store: HistoryStore
     private var cancellable: AnyCancellable?

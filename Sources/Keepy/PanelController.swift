@@ -68,7 +68,8 @@ final class PanelController: NSObject, NSWindowDelegate {
         isVisible ? hide() : show()
     }
 
-    func show() {
+    func show(copyOnly: Bool = false) {
+        viewModel.copyOnly = copyOnly
         viewModel.prepareForShow()
         position()
         panel.makeKeyAndOrderFront(nil)

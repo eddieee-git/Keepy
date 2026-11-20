@@ -2,6 +2,10 @@
 
 버전마다 자세한 내용은 [docs/releases](docs/releases)와 [GitHub 릴리스](https://github.com/eddieee-git/mac-app-keepy/releases)에 있어요. English: [CHANGELOG.en.md](CHANGELOG.en.md)
 
+## 릴리스 전
+
+- Keepy를 직접 열면(응용 프로그램 폴더, Spotlight, 이미 켜져 있을 때 다시 열기) 기록 창이 바로 떠요. 여기서 고르면 클립보드에 복사만 하고 쓰던 앱으로 돌아가요.
+
 ## 0.1.0 (2026-11-20)
 
 - 첫 버전

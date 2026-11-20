@@ -2,6 +2,10 @@
 
 Details for each version are in [docs/releases](docs/releases) and on [GitHub Releases](https://github.com/eddieee-git/mac-app-keepy/releases). 한국어: [CHANGELOG.md](CHANGELOG.md)
 
+## Unreleased
+
+- Opening Keepy directly (Applications, Spotlight, or opening it again while it runs) shows the history window. Picking an item there copies it and returns you to the app you were using.
+
 ## 0.1.0 (2026-11-20)
 
 - First version

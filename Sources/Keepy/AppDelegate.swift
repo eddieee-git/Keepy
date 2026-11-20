@@ -43,16 +43,30 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         applyHotKey()
         AppUpdater.shared.start()
 
-        // 처음 켤 때, 그리고 바로 붙여 넣기에 필요한 권한이 없을 때 시작 안내를 띄운다.
+        // 처음 켤 때는 시작 안내를 띄운다.
+        // 그다음부터 직접 켜면(응용 프로그램 폴더, Spotlight) 기록 창을 바로 보여 준다. 고르면 복사만 하므로 권한이 없어도 된다.
+        // 로그인할 때 저절로 켜졌으면 창 없이 지내다가, 바로 붙여 넣기에 필요한 권한이 없을 때만 시작 안내를 띄운다.
         let needsPermission = settings.pasteAutomatically && !Paster.isTrusted
-        if !settings.hasLaunchedBefore || (needsPermission && settings.showWelcome) {
+        if !settings.hasLaunchedBefore {
             settings.hasLaunchedBefore = true
+            showWelcome()
+        } else if !launchedAsLoginItem {
+            showPanel(copyOnly: true)
+        } else if needsPermission && settings.showWelcome {
             showWelcome()
         }
     }
 
+    /// 로그인할 때 저절로 켜진 경우에는 창을 띄우지 않는다.
+    private var launchedAsLoginItem: Bool {
+        let event = NSAppleEventManager.shared().currentAppleEvent
+        return event?.eventID == kAEOpenApplication
+            && event?.paramDescriptor(forKeyword: keyAEPropData)?.enumCodeValue == keyAELaunchedAsLogInItem
+    }
+
+    /// 이미 켜져 있는 Keepy를 다시 열면 기록 창을 띄운다.
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
-        showSettings()
+        if !flag { showPanel(copyOnly: true) }
         return true
     }
 
@@ -70,9 +84,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     // MARK: 동작
 
-    func showPanel() {
+    /// copyOnly: 앱 아이콘으로 열었을 때. 붙여 넣을 앞 앱이 없으니 고른 항목을 클립보드에 올리기만 한다.
+    func showPanel(copyOnly: Bool = false) {
         // 메뉴가 닫힌 뒤에 패널이 키 윈도우가 되도록 한 박자 늦춘다.
-        DispatchQueue.main.async { self.panel.show() }
+        DispatchQueue.main.async { self.panel.show(copyOnly: copyOnly) }
     }
 
     @objc func openSettings() { showSettings() }
@@ -82,11 +97,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     /// 항목을 클립보드에 올리고, 설정에 따라 앞에 있던 앱에 ⌘V를 보낸다.
     func paste(_ item: ClipItem, plainText: Bool) {
+        let copyOnly = panel.isVisible && panel.viewModel.copyOnly
         panel.hide()
         Paster.write(item, store: store, plainText: plainText)
         monitor.syncChangeCount()
         store.markUsed(item.id)
 
+        if copyOnly {
+            // Keepy를 숨겨서 앞에 쓰던 앱으로 돌아가게 한다. 거기서 ⌘V로 붙여 넣으면 된다.
+            NSApp.hide(nil)
+            return
+        }
         guard settings.pasteAutomatically else { return }
         if Paster.isTrusted {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.08) { Paster.sendPasteKeystroke() }

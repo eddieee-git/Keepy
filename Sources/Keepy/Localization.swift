@@ -46,6 +46,7 @@ enum Localization {
         ("실행 복귀", "Redo"),
         ("오려두기", "Cut"),
         ("복사", "Copy"),
+        ("서식 없이 복사", "Copy as Plain Text"),
         ("붙이기", "Paste"),
         ("전체 선택", "Select All"),
         ("윈도우", "Window"),
