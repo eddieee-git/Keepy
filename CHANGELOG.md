@@ -2,7 +2,7 @@
 
 버전마다 자세한 내용은 [docs/releases](docs/releases)와 [GitHub 릴리스](https://github.com/eddieee-git/mac-app-keepy/releases)에 있어요. English: [CHANGELOG.en.md](CHANGELOG.en.md)
 
-## 0.1.0 (릴리스 전)
+## 0.1.0 (2026-11-20)
 
 - 첫 버전
 - 텍스트(서식 포함)·이미지·파일 복사 기록, 같은 내용은 맨 위로
