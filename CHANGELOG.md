@@ -2,7 +2,7 @@
 
 버전마다 자세한 내용은 [docs/releases](docs/releases)와 [GitHub 릴리스](https://github.com/eddieee-git/mac-app-keepy/releases)에 있어요. English: [CHANGELOG.en.md](CHANGELOG.en.md)
 
-## 릴리스 전
+## 0.1.2 (2026-11-20)
 
 - 붙여 넣지 않고 복사만 할 때 "복사했어요"를 잠깐 보여 줘요.
 - 앞뒤 빈칸·줄바꿈만 다른 글은 같은 항목으로 합쳐요.

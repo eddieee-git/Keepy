@@ -2,7 +2,7 @@
 
 Details for each version are in [docs/releases](docs/releases) and on [GitHub Releases](https://github.com/eddieee-git/mac-app-keepy/releases). 한국어: [CHANGELOG.md](CHANGELOG.md)
 
-## Unreleased
+## 0.1.2 (2026-11-20)
 
 - Shows "Copied" briefly when an item is copied instead of pasted.
 - Text that differs only in leading or trailing spaces and line breaks is merged into one item.
