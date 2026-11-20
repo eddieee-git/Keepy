@@ -1,14 +1,10 @@
-// swift-tools-version: 6.0
+// swift-tools-version:5.10
 import PackageDescription
 
 let package = Package(
     name: "Keepy",
     platforms: [.macOS(.v14)],
     targets: [
-        .executableTarget(
-            name: "Keepy",
-            path: "Sources/Keepy"
-        )
-    ],
-    swiftLanguageModes: [.v5]
+        .executableTarget(name: "Keepy", path: "Sources/Keepy")
+    ]
 )

@@ -3,8 +3,7 @@ import ApplicationServices
 
 enum Paster {
     @MainActor
-    static func write(_ item: ClipItem, store: HistoryStore, plainText: Bool) {
-        let pb = NSPasteboard.general
+    static func write(_ item: ClipItem, store: HistoryStore, plainText: Bool, to pb: NSPasteboard = .general) {
         pb.clearContents()
         switch item.kind {
         case .text:
@@ -19,23 +18,26 @@ enum Paster {
                 pb.setData(tiff, forType: .tiff)
             }
         case .file:
-            let urls = item.filePaths.map { URL(fileURLWithPath: $0) as NSURL }
             if plainText {
                 pb.setString(item.text, forType: .string)
             } else {
-                pb.writeObjects(urls)
+                pb.writeObjects(item.filePaths.map { URL(fileURLWithPath: $0) as NSURL })
             }
         }
     }
 
-    private static var didPrompt = false
+    /// ⌘V 키 입력을 보내려면 손쉬운 사용 권한이 필요하다.
+    static var isTrusted: Bool { AXIsProcessTrusted() }
 
-    /// ⌘V 키 입력을 보내려면 손쉬운 사용 권한이 필요합니다.
-    static func isTrusted(prompt: Bool) -> Bool {
-        let shouldPrompt = prompt && !didPrompt
-        if shouldPrompt { didPrompt = true }
-        let options = ["AXTrustedCheckOptionPrompt": shouldPrompt] as CFDictionary
-        return AXIsProcessTrustedWithOptions(options)
+    /// 시스템의 권한 요청 창을 띄운다.
+    static func requestTrust() {
+        _ = AXIsProcessTrustedWithOptions(["AXTrustedCheckOptionPrompt": true] as CFDictionary)
+    }
+
+    static func openAccessibilitySettings() {
+        if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
+            NSWorkspace.shared.open(url)
+        }
     }
 
     static func sendPasteKeystroke() {
@@ -47,11 +49,5 @@ enum Paster {
         up?.flags = .maskCommand
         down?.post(tap: .cgAnnotatedSessionEventTap)
         up?.post(tap: .cgAnnotatedSessionEventTap)
-    }
-
-    static func openAccessibilitySettings() {
-        if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
-            NSWorkspace.shared.open(url)
-        }
     }
 }

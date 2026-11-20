@@ -30,7 +30,8 @@ struct HistoryView: View {
         HStack(spacing: 8) {
             Image(systemName: "magnifyingglass")
                 .foregroundStyle(.secondary)
-            TextField("클립보드 기록 검색", text: $vm.query)
+                .accessibilityHidden(true)
+            TextField(L("클립보드 기록 검색"), text: $vm.query)
                 .textFieldStyle(.plain)
                 .font(.system(size: 15))
                 .focused($searchFocused)
@@ -41,6 +42,8 @@ struct HistoryView: View {
                     Image(systemName: "xmark.circle.fill").foregroundStyle(.tertiary)
                 }
                 .buttonStyle(.plain)
+                .help(L("검색어 지우기"))
+                .accessibilityLabel(L("검색어 지우기"))
             }
         }
         .padding(.horizontal, 14)
@@ -52,7 +55,8 @@ struct HistoryView: View {
             Image(systemName: vm.query.isEmpty ? "doc.on.clipboard" : "magnifyingglass")
                 .font(.system(size: 28))
                 .foregroundStyle(.tertiary)
-            Text(vm.query.isEmpty ? "아직 복사한 항목이 없습니다" : "검색 결과가 없습니다")
+                .accessibilityHidden(true)
+            Text(vm.query.isEmpty ? L("아직 복사한 항목이 없어요") : L("찾는 항목이 없어요"))
                 .foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -72,11 +76,11 @@ struct HistoryView: View {
                                 onPick(item, NSEvent.modifierFlags.contains(.option))
                             }
                             .contextMenu {
-                                Button("붙여넣기") { onPick(item, false) }
-                                Button("서식 없이 붙여넣기") { onPick(item, true) }
+                                Button(L("붙여 넣기")) { onPick(item, false) }
+                                Button(L("서식 없이 붙여 넣기")) { onPick(item, true) }
                                 Divider()
-                                Button(item.pinned ? "고정 해제" : "고정") { vm.store.togglePin(item.id) }
-                                Button("삭제", role: .destructive) { vm.store.delete(item.id) }
+                                Button(item.pinned ? L("고정 풀기") : L("고정")) { vm.store.togglePin(item.id) }
+                                Button(L("삭제"), role: .destructive) { vm.delete(item) }
                             }
                     }
                 }
@@ -91,12 +95,16 @@ struct HistoryView: View {
 
     private func footer(count: Int) -> some View {
         HStack(spacing: 12) {
-            hint("↩", "붙여넣기")
-            hint("⌥↩", "서식 없이")
-            hint("⌘P", "고정")
-            hint("⌘⌫", "삭제")
+            if let notice = vm.notice {
+                Text(notice).foregroundStyle(.secondary)
+            } else {
+                hint("↩", L("붙여 넣기"))
+                hint("⌥↩", L("서식 없이"))
+                hint("⌘P", L("고정"))
+                hint("⌘⌫", L("삭제"))
+            }
             Spacer()
-            Text("\(count)개")
+            Text(L("%ld개", count))
                 .foregroundStyle(.tertiary)
         }
         .font(.system(size: 11))
@@ -122,6 +130,7 @@ struct ClipRow: View {
     private static let relative: RelativeDateTimeFormatter = {
         let f = RelativeDateTimeFormatter()
         f.unitsStyle = .short
+        f.locale = Locale(identifier: Localization.isKorean ? "ko_KR" : "en_US")
         return f
     }()
 
@@ -129,6 +138,7 @@ struct ClipRow: View {
         HStack(spacing: 10) {
             leading
                 .frame(width: 32, height: 32)
+                .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 2) {
                 Text(item.title)
                     .font(.system(size: 13))
@@ -139,6 +149,7 @@ struct ClipRow: View {
                         Image(nsImage: icon)
                             .resizable()
                             .frame(width: 12, height: 12)
+                            .accessibilityHidden(true)
                     }
                     Text(subtitle)
                         .lineLimit(1)
@@ -151,6 +162,8 @@ struct ClipRow: View {
                 Image(systemName: "pin.fill")
                     .font(.system(size: 10))
                     .foregroundStyle(.orange)
+                    .help(L("고정"))
+                    .accessibilityLabel(L("고정"))
             }
             if index < 9 {
                 Text("⌘\(index + 1)")

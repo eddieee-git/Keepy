@@ -2,14 +2,14 @@ import AppKit
 import Carbon.HIToolbox
 import SwiftUI
 
-/// 비활성화 패널이라도 검색창 입력을 받으려면 키 윈도우가 될 수 있어야 합니다.
+/// 비활성화 패널이라도 검색창 입력을 받으려면 키 윈도우가 될 수 있어야 한다.
 final class KeyablePanel: NSPanel {
     override var canBecomeKey: Bool { true }
     override var canBecomeMain: Bool { false }
 }
 
 /// 단축키로 띄우는 기록 패널. `.nonactivatingPanel`이라 앞에 있던 앱이
-/// 계속 활성 상태로 남아서, 닫은 뒤 ⌘V가 그 앱으로 들어갑니다.
+/// 계속 활성 상태로 남아서, 닫은 뒤 ⌘V가 그 앱으로 들어간다.
 @MainActor
 final class PanelController: NSObject, NSWindowDelegate {
     let viewModel: PanelViewModel
@@ -79,6 +79,7 @@ final class PanelController: NSObject, NSWindowDelegate {
         guard panel.isVisible else { return }
         panel.orderOut(nil)
         removeKeyMonitor()
+        viewModel.store.commitDeletion()
     }
 
     func windowDidResignKey(_ notification: Notification) {
@@ -92,7 +93,7 @@ final class PanelController: NSObject, NSWindowDelegate {
         let size = panel.frame.size
 
         var origin: NSPoint
-        switch Prefs.panelPosition {
+        switch AppSettings.shared.panelPosition {
         case .mouse:
             origin = NSPoint(x: mouse.x - 20, y: mouse.y - size.height + 20)
         case .center:
@@ -118,7 +119,7 @@ final class PanelController: NSObject, NSWindowDelegate {
         keyMonitor = nil
     }
 
-    /// true를 돌려주면 이벤트를 소비합니다 (검색창으로 전달하지 않음).
+    /// true를 돌려주면 이벤트를 쓴 것으로 보고 검색창으로 보내지 않는다.
     private func handle(_ event: NSEvent) -> Bool {
         let flags = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
 
@@ -155,6 +156,7 @@ final class PanelController: NSObject, NSWindowDelegate {
         }
         switch key {
         case "p": viewModel.togglePinSelected(); return true
+        case "z": viewModel.undoDelete(); return true
         case "w": hide(); return true
         case ",": hide(); return false
         default: return false

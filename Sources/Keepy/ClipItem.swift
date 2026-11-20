@@ -29,10 +29,9 @@ struct ClipItem: Codable, Identifiable, Hashable {
                 .map { $0.trimmingCharacters(in: .whitespaces) } ?? text
             return String(line.prefix(300))
         case .image:
-            return "이미지"
+            return L("이미지")
         case .file:
-            let names = filePaths.map { ($0 as NSString).lastPathComponent }
-            return names.joined(separator: ", ")
+            return filePaths.map { ($0 as NSString).lastPathComponent }.joined(separator: ", ")
         }
     }
 
@@ -40,19 +39,19 @@ struct ClipItem: Codable, Identifiable, Hashable {
         switch kind {
         case .text:
             let lines = text.split(whereSeparator: \.isNewline).count
-            return lines > 1 ? "\(text.count)자 · \(lines)줄" : "\(text.count)자"
+            return lines > 1 ? L("%ld자 · %ld줄", text.count, lines) : L("%ld자", text.count)
         case .image:
-            return detail ?? "이미지"
+            return detail ?? L("이미지")
         case .file:
-            return filePaths.count > 1 ? "파일 \(filePaths.count)개" : "파일"
+            return filePaths.count > 1 ? L("파일 %ld개", filePaths.count) : L("파일")
         }
     }
 
     var tooltip: String {
         switch kind {
-        case .text: String(text.prefix(1500))
-        case .image: detail ?? "이미지"
-        case .file: filePaths.joined(separator: "\n")
+        case .text: return String(text.prefix(1500))
+        case .image: return detail ?? L("이미지")
+        case .file: return filePaths.joined(separator: "\n")
         }
     }
 

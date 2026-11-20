@@ -1,7 +1,7 @@
 import AppKit
 import CryptoKit
 
-/// 클립보드에서 읽어 온 원본 내용
+/// 클립보드에서 읽어 온 내용
 struct CapturedContent {
     var kind: ClipItem.Kind
     var text: String = ""
@@ -13,7 +13,7 @@ struct CapturedContent {
 }
 
 enum PasteboardReader {
-    /// nspasteboard.org 관례: 비밀번호·임시 데이터는 기록하지 않습니다.
+    /// nspasteboard.org 관례: 비밀번호·임시 데이터는 기록하지 않는다.
     static let ignoredTypes: Set<String> = [
         "org.nspasteboard.ConcealedType",
         "org.nspasteboard.TransientType",
